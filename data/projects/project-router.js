@@ -57,6 +57,7 @@ router.post('/resources', (req, res) => {
 })
 
 router.post('/projects/:id/tasks', (req, res) => {
+  project_id = req.params
   projectDB.addTasks(req.body, req.params.id)
     .then(newtask => {
       res.status(200).json(newtask)

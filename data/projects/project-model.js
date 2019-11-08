@@ -134,7 +134,14 @@ INSERT INTO tasks (description, notes, project_id)
     VALUES ('DESCRIPTION6', 'NOTES6', 5);
 */
 function addTasks(taskInfo, id){
-  return getTasksByProjectId
+  return getTasksByProjectId(id)
+    .then(tasks => {
+      return db('tasks')
+        .insert(taskInfo)
+        .then(getTasks => {
+          return tasks
+        })
+    })
 }
 
 /************************************** STRETCH **************************************/
