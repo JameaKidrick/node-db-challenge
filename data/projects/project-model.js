@@ -30,12 +30,12 @@ SELECT * FROM projects;
 */
 function getProjects(){
   return db('projects')
-//     .then(projects => {
-//       projects.map(item => {
-//         return item.completed ? item.completed = true : item.completed = false
-//       })
-//       console.log(projects)
-//     })
+    .then(projects => {
+      return projects.map(item => {
+        return {...item, completed: item.completed ? true : false}
+      })
+      console.log(projects)
+    })
 }
 
 // ADD FINDPROJECTBYID
@@ -63,12 +63,12 @@ function getTasks(){
   return db('tasks')
     .join('projects', 'projects.project_id', '=', 'tasks.project_id')
     .select('projects.name AS project_name', 'projects.description AS project_description', 'tasks.description AS task_description', 'notes AS task_notes', 'tasks.completed')
-    // .then(tasks => {
-    //   tasks.map(item => {
-    //     return item.completed ? item.completed = true : item.completed = false
-    //   })
-    //   console.log(tasks)
-    // })
+    .then(tasks => {
+      return tasks.map(item => {
+        return {...item, completed: item.completed ? true : false}
+      })
+      console.log(tasks)
+    })
 }
 
 /*
@@ -85,12 +85,12 @@ function getTasksByProjectId(id){
     .join('projects', 'projects.project_id', '=', 'tasks.project_id')
     .select('projects.name AS project_name', 'projects.description AS project_description', 'tasks.description AS task_description', 'notes AS task_notes', 'tasks.completed')
     .where({'tasks.project_id': id})
-    // .then(tasks => {
-    //   tasks.map(item => {
-    //     return item.completed ? item.completed = true : item.completed = false
-    //   })
-    //   console.log(tasks)
-    // })
+    .then(tasks => {
+      return tasks.map(item => {
+        return {...item, completed: item.completed ? true : false}
+      })
+      console.log(tasks)
+    })
 }
 
 /*
@@ -134,13 +134,10 @@ INSERT INTO tasks (description, notes, project_id)
     VALUES ('DESCRIPTION6', 'NOTES6', 5);
 */
 function addTasks(taskInfo, id){
-  return getTasksByProjectId(id)
-    .then(tasks => {
-      return db('tasks')
-        .insert(taskInfo)
-        .then(getTasks => {
-          return tasks
-        })
+  return db('tasks')
+    .insert({...taskInfo, project_id: id})
+    .then(getTasks => {
+      return getTasksByProjectId(id)
     })
 }
 
