@@ -16,15 +16,30 @@ const router = express.Router();
 router.get('/projects', (req, res) => {
   projectDB.getProjects()
     .then(projects => {
-      // console.log(projects)
       res.status(200).json(projects)
     })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal Server Error' })
+    })
+})
+
+router.get('/projects/:id', (req, res) => {
+  projectDB.getProjectById(req.params.id)
+    .then(project => {
+      res.status(200).json(project)
+    })
+    // .catch(err => {
+    //   res.status(500).json({ error: 'Internal Server Error' })
+    // })
 })
 
 router.get('/resources', (req, res) => {
   projectDB.getResources()
     .then(resources => {
       res.status(200).json(resources)
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal Server Error' })
     })
 })
 
@@ -33,12 +48,18 @@ router.get('/tasks', (req, res) => {
     .then(tasks => {
       res.status(200).json(tasks)
     })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal Server Error' })
+    })
 })
 
 router.get('/projects/:id/tasks', (req, res) => {
   projectDB.getTasksByProjectId(req.params.id)
     .then(tasks => {
       res.status(200).json(tasks)
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal Server Error' })
     })
 })
 
@@ -47,12 +68,18 @@ router.post('/projects', (req, res) => {
     .then(newProject => {
       res.status(200).json(newProject)
     })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal Server Error' })
+    })
 })
 
 router.post('/resources', (req, res) => {
   projectDB.addResources(req.body)
     .then(newResource => {
       res.status(200).json(newResource)
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal Server Error' })
     })
 })
 
@@ -61,6 +88,37 @@ router.post('/projects/:id/tasks', (req, res) => {
   projectDB.addTasks(req.body, req.params.id)
     .then(newtask => {
       res.status(200).json(newtask)
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal Server Error' })
+    })
+})
+
+router.put('/projects/:id', (req, res) => {
+  projectDB.updateProjects(req.body, req.params.id)
+    .then(update => {
+      res.status(200).json(update)
+    })
+})
+
+router.put('/tasks/:id', (req, res) => {
+  projectDB.updateTasks(req.body, req.params.id)
+    .then(update => {
+      res.status(200).json(update)
+    })
+})
+
+router.delete('/projects/:id', (req, res) => {
+  projectDB.deleteProjects(req.params.id)
+    .then(deleted => {
+      res.status(200).json(deleted)
+    })
+})
+
+router.delete('/tasks/:id', (req, res) => {
+  projectDB.deleteTasks(req.params.id)
+    .then(deleted => {
+      res.status(200).json(deleted)
     })
 })
 

@@ -13,12 +13,17 @@ const db = require('../../db_config');
 
 module.exports={
     getProjects,
+    getProjectById,
     getResources,
     getTasks,
     getTasksByProjectId,
     addProjects,
     addResources,
-    addTasks
+    addTasks,
+    updateProjects,
+    updateTasks,
+    deleteProjects,
+    deleteTasks
 }
 
 /*
@@ -38,7 +43,23 @@ function getProjects(){
     })
 }
 
-// ADD FINDPROJECTBYID
+/************************************** STRETCH **************************************/
+/*
+// Add an endpoint for retrieving a `project` by its `id` that returns an object with the structure laid out in the README
+
+SQL Query:
+
+*/
+function getProjectById(id){
+  return db('projects', {tasks: ['tasks']})
+    .select('projects.project_id', 'projects.name', 'projects.description')
+    .join('tasks', 'tasks.project_id', '=', 'projects.project_id')
+    .where({'projects.project_id': id})
+    // .then(project => {
+    //   return {...project, task:['tasks.*']}
+    // })
+}
+/************************************** STRETCH **************************************/
 
 /*
 retrieving a list of resources
@@ -67,7 +88,6 @@ function getTasks(){
       return tasks.map(item => {
         return {...item, completed: item.completed ? true : false}
       })
-      console.log(tasks)
     })
 }
 
@@ -89,7 +109,6 @@ function getTasksByProjectId(id){
       return tasks.map(item => {
         return {...item, completed: item.completed ? true : false}
       })
-      console.log(tasks)
     })
 }
 
@@ -141,48 +160,76 @@ function addTasks(taskInfo, id){
     })
 }
 
-/************************************** STRETCH **************************************/
-
 /*
-UPDATE
+project name(required) and description can be updated
 
 SQL Query:
 
-
+SELECT * FROM projects;
+UPDATE projects
+    SET name = 'NAME56', description = 'DESCRIPTION56'
+    WHERE project_id = 9;
 */
-function updateProjects(){
-  
+function updateProjects(project_info, id){
+  return db('projects')
+    .where({'projects.project_id': id})
+    .update(project_info)
+    .then(getUpdate => {
+      return getProjects()
+    })
 }
 
 /*
-DELETE
+task description(required) and notes can be updated
 
 SQL Query:
 
-
+SELECT * FROM tasks;
+UPDATE tasks
+    SET description = 'DESCRIPTION56', notes = 'notes56'
+    WHERE task_id = 14;
 */
-function deletetProjects(){
-  
+function updateTasks(task_info, id){
+  return db('tasks')
+    .where({'tasks.task_id': id})
+    .update(task_info)
+    .then(getUpdate => {
+      return getTasks()
+    })
 }
 
 /*
-UPDATE
+project can be deleted
 
 SQL Query:
 
-
+SELECT * FROM projects;
+DELETE FROM projects
+    WHERE project_id = 8;
 */
-function updateTasks(){
-  
+function deleteProjects(id){
+  return db('projects')
+    .where({'projects.project_id': id})
+    .del()
+    .then(getUpdate => {
+      return getProjects()
+    })
 }
 
 /*
-DELETE
+task can be deleted
 
 SQL Query:
 
-
+SELECT * FROM tasks;
+DELETE FROM tasks
+    WHERE task_id = 12;
 */
-function deletetTasks(){
-  
+function deleteTasks(id){
+  return db('tasks')
+    .where({'tasks.task_id': id})
+    .del()
+    .then(getUpdate => {
+      return getTasks()
+    })
 }
